@@ -1,14 +1,6 @@
 # ASP.NET Core (.NET Framework)
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '3.1.x'
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
-trigger:
-- master
+trigger: 
+  - master
 
 pool:
   vmImage: 'windows-latest'
@@ -19,10 +11,19 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+# Use the .NET Core SDK 3.1
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '3.1.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+# Install NuGet tool if it's not installed
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
   inputs:
+    command: 'restore'
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
